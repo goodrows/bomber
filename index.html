@@ -15,14 +15,15 @@
         }
         #world-map {
             width: 90vw;
-            max-width: 800px;
+            max-width: 900px;
             display: block;
+            border: 2px solid white;
         }
         .explosion {
             position: absolute;
-            width: 60px;
-            height: 60px;
-            background: url('https://i.imgur.com/7j0Ud9O.gif') center/cover no-repeat;
+            width: 80px;
+            height: 80px;
+            background: url('https://media.tenor.com/PLU8vKqQhQwAAAAi/explosion.gif') center/cover no-repeat;
             transform: translate(-50%, -50%);
             opacity: 1;
             animation: fadeOut 3s ease-out forwards;
@@ -34,8 +35,9 @@
     </style>
 </head>
 <body>
+    <h1 style="color: white;">World Map Explosions</h1>
     <div id="map-container">
-        <img id="world-map" src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/World_map_-_low_resolution.svg/1200px-World_map_-_low_resolution.svg.png" alt="World Map">
+        <img id="world-map" src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/World_map_blank_shorelines_seas.svg/1280px-World_map_blank_shorelines_seas.svg.png" alt="World Map">
     </div>
     <script>
         document.getElementById("world-map").addEventListener("click", function(event) {
