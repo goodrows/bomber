@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CIA Tactical Map</title>
+    <style>
+        body {
+            background-color: black;
+            color: lime;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+        }
+        #map-container {
+            position: relative;
+            display: inline-block;
+            border: 2px solid lime;
+        }
+        #world-map {
+            width: 90vw;
+            max-width: 800px;
+            display: block;
+        }
+        .bomb {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background-color: red;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 10px red;
+        }
+    </style>
+</head>
+<body>
+    <h1>CIA Tactical Strike Interface</h1>
+    <div id="map-container">
+        <img id="world-map" src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/World_map_-_low_resolution.svg/1200px-World_map_-_low_resolution.svg.png" alt="World Map">
+    </div>
+    <script>
+        document.getElementById("world-map").addEventListener("click", function(event) {
+            let mapContainer = document.getElementById("map-container");
+            let bomb = document.createElement("div");
+            bomb.className = "bomb";
+            let rect = this.getBoundingClientRect();
+            bomb.style.left = (event.clientX - rect.left) + "px";
+            bomb.style.top = (event.clientY - rect.top) + "px";
+            mapContainer.appendChild(bomb);
+        });
+    </script>
+</body>
+</html>
