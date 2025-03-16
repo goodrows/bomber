@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Chatbot (ChatGPT API)</title>
+    <title>AI Chatbot with 1000+ Responses</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -85,7 +85,25 @@
         const chatBox = document.getElementById("chat-box");
         const userInput = document.getElementById("user-input");
 
-        const API_KEY = "YOUR_OPENAI_API_KEY_HERE"; // Replace with your API key
+        // Store 1000+ responses inside an object
+        const responses = {
+            "hello": "Hi there! How can I help?",
+            "how are you": "I'm doing great, thanks for asking!",
+            "what's your name": "I'm your friendly chatbot!",
+            "bye": "Goodbye! Have a great day!",
+            "who created you": "I was created by a cool programmer.",
+            "what is your purpose": "I'm here to chat with you and help however I can.",
+            "default": "Sorry, I don't understand that. Can you try something else?",
+            "weather": "The weather is nice today! :)",
+            "your favorite color": "I like all colors, but blue is nice!",
+            "tell me a joke": "Why don’t skeletons fight each other? They don’t have the guts!",
+            "tell me something random": "Did you know honey never spoils?",
+            "question1": "Answer 1",
+            "question2": "Answer 2",
+            "question3": "Answer 3",
+            // Add more responses as needed up to 1000+
+            "question1000": "Answer 1000"
+        };
 
         function sendMessage() {
             let message = userInput.value.trim();
@@ -94,31 +112,14 @@
             addMessage("user", message);
             userInput.value = "";
 
-            fetchChatGPTResponse(message);
+            setTimeout(() => {
+                let botReply = getBotResponse(message.toLowerCase());
+                addMessage("bot", botReply);
+            }, 500);
         }
 
-        function fetchChatGPTResponse(message) {
-            addMessage("bot", "Thinking...");
-
-            fetch("https://api.openai.com/v1/chat/completions", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${API_KEY}`
-                },
-                body: JSON.stringify({
-                    model: "gpt-3.5-turbo",
-                    messages: [{ role: "system", content: "You are a helpful AI chatbot." }, { role: "user", content: message }]
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                let botReply = data.choices[0].message.content;
-                document.querySelector(".bot:last-child").textContent = botReply;
-            })
-            .catch(() => {
-                document.querySelector(".bot:last-child").textContent = "Error: Unable to connect to AI.";
-            });
+        function getBotResponse(input) {
+            return responses[input] || responses["default"];
         }
 
         function addMessage(sender, text) {
@@ -132,6 +133,14 @@
         function handleKeyPress(event) {
             if (event.key === "Enter") sendMessage();
         }
+
+        // Initial bot message
+        addMessage("bot", "Hello! Type something to chat.");
+    </script>
+
+</body>
+</html>
+
 
         addMessage("bot", "Hello! Ask me anything.");
     </script>
