@@ -3,54 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>World Map Explosions</title>
+    <title>AI Chatbot (ChatGPT API)</title>
     <style>
         body {
-            background-color: white;
-            text-align: center;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #222;
+            color: #fff;
         }
-        #map-container {
-            position: relative;
-            display: inline-block;
+        #chat-container {
+            width: 400px;
+            height: 500px;
+            border-radius: 10px;
+            background: #333;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
-        #world-map {
-            width: 90vw;
-            max-width: 900px;
-            display: block;
-            border: 2px solid white;
+        #chat-box {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 10px;
         }
-        .explosion {
-            position: absolute;
-            width: 80px;
-            height: 80px;
-            background: url("https://www.google.com/search?q=explosion+gif&sca_esv=c4814c8ed9710a8a&rlz=1C1VDKB_en-gbGB1101GB1102&udm=2&sxsrf=AHTn8zrxyIa8ssYxNfGyD41RTk3yPmgzJw%3A1742127939076&ei=Q8PWZ7CrBJqthbIPxeTmqAs&oq=explosion+g&gs_lp=EgNpbWciC2V4cGxvc2lvbiBnKgIIADIKEAAYgAQYQxiKBTIFEAAYgAQyBRAAGIAEMgUQABiABDIFEAAYgAQyBRAAGIAEMgUQABiABDIFEAAYgAQyBRAAGIAEMgUQABiABEjpGlCoCVjbEXAAeACQAQCYAdwJoAHpE6oBBzAuMS43LTK4AQHIAQD4AQGYAgOgAu4UwgIHECMYJxjJAsICBhAAGAcYHsICDRAAGIAEGLEDGEMYigWYAwCIBgGSBwcwLjEuNy0yoAfQEA&sclient=img#vhid=-dxH8Kc-7JX0hM&vssid=mosaic') center/cover no-repeat;
-            transform: translate(-50%, -50%);
-            opacity: 1;
-            animation: fadeOut 3s ease-out forwards;
+        .message {
+            padding: 8px 12px;
+            border-radius: 5px;
+            margin: 5px 0;
+            max-width: 75%;
         }
-        @keyframes fadeOut {
-            0% { opacity: 1; }
-            100% { opacity: 0; }
+        .user {
+            background: #007BFF;
+            align-self: flex-end;
+            text-align: right;
+        }
+        .bot {
+            background: #444;
+            align-self: flex-start;
+        }
+        #input-container {
+            display: flex;
+            padding: 10px;
+            background: #222;
+        }
+        #user-input {
+            flex-grow: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        #send-btn {
+            margin-left: 10px;
+            padding: 10px 15px;
+            border: none;
+            background: #007BFF;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        #send-btn:hover {
+            background: #0056b3;
         }
     </style>
 </head>
 <body>
-    <h1 style="color: white;">World Map Explosions</h1>
-    <div id="map-container">
-        <img id="world-map" src="https://www.google.com/search?sca_esv=c4814c8ed9710a8a&rlz=1C1VDKB_en-gbGB1101GB1102&sxsrf=AHTn8zrEHDyyhl2-OUzMNmthSbi_YXDuJg:1742127768119&q=world+map&udm=2&fbs=ABzOT_CWdhQLP1FcmU5B0fn3xuWpA-dk4wpBWOGsoR7DG5zJBvRU_c8CYw0YyGBU6UN-VqoqPYaI3HSL1XTvQrW6xFSppNEdFM2lIGVtZ8acDN-uyO_fY-UXLxyVJmXPbowZNJCZ9625YivpM1oJN5pTbRQgA6jgAtT-5_3hct-EJnwooC01qqb7Oy4oTgIf5OZCNp4V7hjI92IVs3AHwhUMmbM9MK2A0w&sa=X&sqi=2&ved=2ahUKEwiQopbWy46MAxVTSkEAHcCEBYEQtKgLegQIFBAB#vhid=OCwZirDOdrbm3M&vssid=mosaic" alt="World Map">
-    </div>
-    <script>
-        document.getElementById("world-map").addEventListener("click", function(event) {
-            let mapContainer = document.getElementById("map-container");
-            let explosion = document.createElement("div");
-            explosion.className = "explosion";
-            let rect = this.getBoundingClientRect();
-            explosion.style.left = (event.clientX - rect.left) + "px";
-            explosion.style.top = (event.clientY - rect.top) + "px";
-            mapContainer.appendChild(explosion);
 
-            setTimeout(() => explosion.remove(), 3000);
-        });
+    <div id="chat-container">
+        <div id="chat-box"></div>
+        <div id="input-container">
+            <input type="text" id="user-input" placeholder="Type a message..." onkeypress="handleKeyPress(event)">
+            <button id="send-btn" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        const chatBox = document.getElementById("chat-box");
+        const userInput = document.getElementById("user-input");
+
+        const API_KEY = "YOUR_OPENAI_API_KEY_HERE"; // Replace with your API key
+
+        function sendMessage() {
+            let message = userInput.value.trim();
+            if (message === "") return;
+
+            addMessage("user", message);
+            userInput.value = "";
+
+            fetchChatGPTResponse(message);
+        }
+
+        function fetchChatGPTResponse(message) {
+            addMessage("bot", "Thinking...");
+
+            fetch("https://api.openai.com/v1/chat/completions", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${API_KEY}`
+                },
+                body: JSON.stringify({
+                    model: "gpt-3.5-turbo",
+                    messages: [{ role: "system", content: "You are a helpful AI chatbot." }, { role: "user", content: message }]
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                let botReply = data.choices[0].message.content;
+                document.querySelector(".bot:last-child").textContent = botReply;
+            })
+            .catch(() => {
+                document.querySelector(".bot:last-child").textContent = "Error: Unable to connect to AI.";
+            });
+        }
+
+        function addMessage(sender, text) {
+            let messageDiv = document.createElement("div");
+            messageDiv.classList.add("message", sender);
+            messageDiv.textContent = text;
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === "Enter") sendMessage();
+        }
+
+        addMessage("bot", "Hello! Ask me anything.");
     </script>
+
 </body>
 </html>
